@@ -7,7 +7,7 @@ venv/
 env/
 
 # Data and Models (We don't want to upload huge files to GitHub)
-data/*
+!data/*.csv
 !data/.gitkeep
 models/*.pth
 
