@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+env/
+
+# Data and Models (We don't want to upload huge files to GitHub)
+data/*
+!data/.gitkeep
+models/*.pth
+
+# OS files
+.DS_Store
+.directory
