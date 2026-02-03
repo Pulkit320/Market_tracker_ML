@@ -35,7 +35,7 @@ class MarketPreprocessor:
     # --------------------------------------------------
     # 3️⃣ Drop invalid rows SAFELY
     # --------------------------------------------------
-        df = df.loc[df['Close'].notna()].copy()
+        df = df[df['Close'].notna()].copy()
 
     # --------------------------------------------------
     # 4️⃣ Technical indicators
