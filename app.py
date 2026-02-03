@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from tensorflow.keras.models import load_model
 
-from preprocess import MarketPreprocessor
+from src.preprocess import MarketPreprocessor
 
 # --------------------------------------------------
 # Page config
