@@ -11,25 +11,33 @@ class MarketPreprocessor:
     df = df.copy()
 
     # --------------------------------------------------
-    # 🔴 FIX 1: Flatten MultiIndex columns from yfinance
+    # 1️⃣ Flatten MultiIndex columns (yfinance quirk)
     # --------------------------------------------------
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
     # --------------------------------------------------
-    # 🔴 FIX 2: Ensure Close is a clean numeric Series
+    # 2️⃣ Standardize price column
     # --------------------------------------------------
-    df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
-    df = df.dropna(subset=['Close'])
+    if 'Close' in df.columns:
+        price = df['Close']
+    elif 'Adj Close' in df.columns:
+        price = df['Adj Close']
+    else:
+        raise ValueError(f"No Close or Adj Close column found. Columns: {df.columns}")
+
+    df['Close'] = pd.to_numeric(price, errors='coerce')
 
     # --------------------------------------------------
-    # Moving Average
+    # 3️⃣ Drop invalid rows SAFELY
+    # --------------------------------------------------
+    df = df.loc[df['Close'].notna()].copy()
+
+    # --------------------------------------------------
+    # 4️⃣ Technical indicators
     # --------------------------------------------------
     df['MA20'] = df['Close'].rolling(window=20, min_periods=20).mean()
 
-    # --------------------------------------------------
-    # RSI
-    # --------------------------------------------------
     delta = df['Close'].diff()
     gain = delta.clip(lower=0)
     loss = -delta.clip(upper=0)
@@ -41,6 +49,7 @@ class MarketPreprocessor:
     df['RSI'] = 100 - (100 / (1 + rs))
 
     return df
+
 
 
     def create_sequences(self, data):
