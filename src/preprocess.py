@@ -11,7 +11,14 @@ class MarketPreprocessor:
         df = df.copy()
 
         # Ensure numeric Close
-        df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
+        close = df['Close']
+
+# If Close is a DataFrame (multi-column), take the first column
+        if isinstance(close, pd.DataFrame):
+            close = close.iloc[:, 0]
+
+        df['Close'] = pd.to_numeric(close, errors='coerce')
+
         df.dropna(subset=['Close'], inplace=True)
 
         # Moving Average
