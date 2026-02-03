@@ -27,11 +27,18 @@ class MarketPreprocessor:
         return df.dropna()
 
     def create_sequences(self, data):
-        scaled_data = self.scaler.fit_transform(data)
         X, y = [], []
+    
+        for i in range(len(data) - self.window_size - 1):
+            X.append(data[i:i+self.window_size])
 
-        for i in range(self.window_size, len(scaled_data)):
-            X.append(scaled_data[i-self.window_size:i])
-            y.append(scaled_data[i, 0])
+            close_today = data[i + self.window_size - 1, 0]
+            close_tomorrow = data[i + self.window_size, 0]
+
+        # Direction: 1 = UP, 0 = DOWN or SAME
+            direction = 1 if close_tomorrow > close_today else 0
+            y.append(direction)
 
         return np.array(X), np.array(y)
+
+
